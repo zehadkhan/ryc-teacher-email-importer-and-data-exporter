@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 require_once plugin_dir_path( __FILE__ ) . 'teacher-exporter.php';
 
-class RYC_Teacher_Email_Importer {
+class RYC_Teacher_Email_Importer_And_Data_Exporter {
 
     public function __construct() {
         add_action( 'admin_menu',             [ $this, 'add_menu' ] );
@@ -417,4 +417,4 @@ class RYC_Teacher_Email_Importer {
     }
 }
 
-new RYC_Teacher_Email_Importer();
+new RYC_Teacher_Email_Importer_And_Data_Exporter();
