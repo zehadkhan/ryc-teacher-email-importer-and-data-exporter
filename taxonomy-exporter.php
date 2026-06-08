@@ -384,55 +384,6 @@ class RYC_Taxonomy_Exporter {
         echo wp_json_encode( $tree, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
         exit;
     }
-
-    // ── Build nested JSON tree ────────────────────────────────────────────────
-
-    private function build_json_tree( $terms, $by_id, $countries, $states, $cities, $filter_country, $filter_state, $filter_city ) {
-        $tree = [];
-
-        foreach ( $countries as $country_term ) {
-            if ( $filter_country !== '' && $country_term->name !== $filter_country ) continue;
-
-            $country_states = [];
-            foreach ( $states as $state_term ) {
-                if ( $state_term->parent !== $country_term->term_id ) continue;
-                if ( $filter_state !== '' && $state_term->name !== $filter_state ) continue;
-
-                $state_cities = [];
-                foreach ( $cities as $city_term ) {
-                    if ( $city_term->parent !== $state_term->term_id ) continue;
-                    if ( $filter_city !== '' && $city_term->name !== $filter_city ) continue;
-
-                    $state_cities[] = [
-                        'term_id'       => $city_term->term_id,
-                        'name'          => $city_term->name,
-                        'slug'          => $city_term->slug,
-                        'teacher_count' => (int) $city_term->count,
-                    ];
-                }
-
-                $country_states[] = [
-                    'term_id'       => $state_term->term_id,
-                    'name'          => $state_term->name,
-                    'slug'          => $state_term->slug,
-                    'teacher_count' => (int) $state_term->count,
-                    'cities'        => $state_cities,
-                ];
-            }
-
-            if ( empty( $country_states ) && ( $filter_state !== '' || $filter_city !== '' ) ) continue;
-
-            $tree[] = [
-                'term_id'       => $country_term->term_id,
-                'name'          => $country_term->name,
-                'slug'          => $country_term->slug,
-                'teacher_count' => (int) $country_term->count,
-                'states'        => $country_states,
-            ];
-        }
-
-        return $tree;
-    }
 }
 
 new RYC_Taxonomy_Exporter();
