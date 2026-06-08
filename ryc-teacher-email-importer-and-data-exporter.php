@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 require_once plugin_dir_path( __FILE__ ) . 'teacher-exporter.php';
 require_once plugin_dir_path( __FILE__ ) . 'teacher-structured-exporter.php';
+require_once plugin_dir_path( __FILE__ ) . 'taxonomy-exporter.php';
 
 class RYC_Teacher_Email_Importer_And_Data_Exporter {
 
