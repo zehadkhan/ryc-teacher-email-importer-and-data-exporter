@@ -191,11 +191,26 @@ class RYC_Taxonomy_Exporter {
         ?>
         <div class="wrap">
             <h1>Teacher Locations Export</h1>
-            <p>Exports the <strong>categories-of-teachers</strong> taxonomy — Country › State/Region › City hierarchy. <?= $total ?> terms total.</p>
+            <p>Exports the <strong>categories-of-teachers</strong> taxonomy — Country › State/Region › City hierarchy.</p>
 
-            <form method="get" action="" style="margin:20px 0;">
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin:20px 0;">
+                <div style="background:#d4edda;padding:10px 18px;border-radius:6px;font-size:13px;">
+                    <strong style="font-size:20px;display:block;"><?= count( $countries ) ?></strong>Countries
+                </div>
+                <div style="background:#d1ecf1;padding:10px 18px;border-radius:6px;font-size:13px;">
+                    <strong style="font-size:20px;display:block;"><?= count( $states ) ?></strong>States / Regions
+                </div>
+                <div style="background:#fff3cd;padding:10px 18px;border-radius:6px;font-size:13px;">
+                    <strong style="font-size:20px;display:block;"><?= count( $cities ) ?></strong>Cities
+                </div>
+                <div style="background:#333;color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;">
+                    <strong style="font-size:20px;display:block;"><?= $total ?></strong>Total
+                </div>
+            </div>
+
+            <form method="get" action="">
                 <input type="hidden" name="page" value="ryc-teacher-locations-export">
-                <table class="form-table" style="max-width:600px;">
+                <table class="form-table">
                     <tr>
                         <th><label for="filter_country">Country</label></th>
                         <td>
@@ -237,13 +252,12 @@ class RYC_Taxonomy_Exporter {
                     </tr>
                 </table>
                 <?php if ( $filter_country || $filter_state || $filter_city ) : ?>
-                    <a href="<?= esc_url( admin_url( 'tools.php?page=ryc-teacher-locations-export' ) ) ?>" class="button" style="margin-top:4px;">Clear filters</a>
+                    <a href="<?= esc_url( admin_url( 'tools.php?page=ryc-teacher-locations-export' ) ) ?>" class="button">Clear filters</a>
                 <?php endif; ?>
             </form>
 
             <p>Showing <strong><?= $shown ?></strong> of <?= $total ?> terms.</p>
 
-            <!-- Preview table -->
             <table class="widefat fixed striped" style="margin-bottom:24px;">
                 <thead>
                     <tr>
@@ -281,27 +295,19 @@ class RYC_Taxonomy_Exporter {
             </table>
 
             <?php if ( $shown > 0 ) : ?>
-            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-block;margin-right:8px;">
+                <?php wp_nonce_field( 'ryc_export_taxonomy' ); ?>
+                <input type="hidden" name="action" value="ryc_export_taxonomy">
+                <?= $hidden_fields ?>
+                <?php submit_button( 'Download CSV (' . $shown . ' terms)', 'primary large', 'submit', false ); ?>
+            </form>
 
-                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-                    <?php wp_nonce_field( 'ryc_export_taxonomy' ); ?>
-                    <input type="hidden" name="action" value="ryc_export_taxonomy">
-                    <?= $hidden_fields ?>
-                    <button type="submit" class="button button-primary button-large">Download CSV (<?= $shown ?> terms)</button>
-                </form>
-
-                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-                    <?php wp_nonce_field( 'ryc_export_taxonomy_json' ); ?>
-                    <input type="hidden" name="action" value="ryc_export_taxonomy_json">
-                    <?= $hidden_fields ?>
-                    <button type="submit" class="button button-primary button-large" style="background:#2271b1;border-color:#2271b1;">Download JSON (nested)</button>
-                </form>
-
-            </div>
-
-            <p style="margin-top:12px;color:#666;font-size:13px;">
-                JSON structure: <code>[ { "name": "USA", "states": [ { "name": "California", "cities": [ { "name": "Los Angeles" } ] } ] } ]</code>
-            </p>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-block;">
+                <?php wp_nonce_field( 'ryc_export_taxonomy_json' ); ?>
+                <input type="hidden" name="action" value="ryc_export_taxonomy_json">
+                <?= $hidden_fields ?>
+                <?php submit_button( 'Download JSON (' . $shown . ' terms)', 'primary large', 'submit', false ); ?>
+            </form>
             <?php endif; ?>
         </div>
         <?php
